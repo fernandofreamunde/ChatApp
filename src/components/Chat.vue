@@ -65,6 +65,12 @@ export default {
       'contactFinder':ContactFinder,
       'messageInput':MessageInput,
   },
+  props: {
+    token:{
+      type:String,
+      required:false
+    },
+  },
   data () {
     return {
       state: {
@@ -129,6 +135,10 @@ export default {
     }
   },
   created() {
+    if (this.token.length === 0) {
+      //I need to check seesion storage so that refreshing does not make me log out.
+      this.$router.push('/login');
+    }
     console.log(this.contacts);
   }
 }

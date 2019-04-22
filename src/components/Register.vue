@@ -52,14 +52,23 @@ export default {
       if (this.password !== this.passwordConfirm) {
         this.state.errors.push('password confirmation failed!');
       }
-        
-      console.log(this.email);
-      console.log(this.password);
-      console.log(this.emailConfirm);
-      console.log(this.passwordConfirm);
-      console.log(this.state);
-    
-      console.log('post this to BE');
+
+      if (this.state.errors.length !== 0) {
+        return;
+      }
+
+      const formData = {
+          "email": this.email,
+          "password": this.password
+      };
+                                                              /// this also solves majour issue not sure what it does
+      this.$http.post('http://localhost:8000/register', formData, {emulateJSON: true})
+      .then(response => {
+          console.log('User logged in, Welkome!');
+          this.$emit('TokenRecieved', response.body.token);
+        }, response => {
+          this.state.errors.push(response.body.error);
+        });
     }
   }
 }

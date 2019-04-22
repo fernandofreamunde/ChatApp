@@ -45,9 +45,37 @@ export default {
   methods:{
     login: function(){
 
-      console.log(this.email);
-      console.log(this.password);
-      console.log('post this to BE');
+    console.log(this.email);
+    console.log(this.password);
+    console.log('post this to BE');
+
+
+    // GET /someUrl
+    // this.$http.get('http://localhost:8000/login', {Authorization: "Bearer asdasd"}).then(response => {
+    //   console.log(response);
+    //   // get body data
+    //   this.someData = response.body;
+
+    // }, response => {
+    //   // error callback
+    // });
+
+    const formData = {
+        "email": this.email,
+        "password": this.password
+    };
+                                                            /// this also solves majour issue not sure what it does
+    this.$http.post('http://localhost:8000/login', formData, {emulateJSON: true})
+    .then(response => {
+        console.log('User logged in, Welkome!');
+        //console.log(response); //pickeup jwt
+        this.$emit('TokenRecieved', response.body.token);
+
+      }, response => {
+        this.state.errors.push(response.body.error)
+        console.error(response.body);
+      });
+    
     }
   }
 }
