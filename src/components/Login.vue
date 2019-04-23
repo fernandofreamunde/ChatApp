@@ -45,21 +45,6 @@ export default {
   methods:{
     login: function(){
 
-    console.log(this.email);
-    console.log(this.password);
-    console.log('post this to BE');
-
-
-    // GET /someUrl
-    // this.$http.get('http://localhost:8000/login', {Authorization: "Bearer asdasd"}).then(response => {
-    //   console.log(response);
-    //   // get body data
-    //   this.someData = response.body;
-
-    // }, response => {
-    //   // error callback
-    // });
-
     const formData = {
         "email": this.email,
         "password": this.password
