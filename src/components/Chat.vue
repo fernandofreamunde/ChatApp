@@ -116,6 +116,31 @@ export default {
     showConversation(conversation) {
       //load conversation based on this contact
       console.log(conversation);
+    },
+    addContact(contact) {
+      console.log('newcontact');
+      this.contacts.push(contact);
+    },
+    updateContact(contact) {
+      console.log('updated contact');
+      console.log(contact);
+
+      if (contact.status == 'accepted') {
+        this.contacts.push(contact);
+      }
+    },
+    getRequest(uri) {
+
+      let headers = {
+        'Content-Type': 'application/json'
+      };
+
+      if(this.token !== '') {
+        headers['Authorization'] = "Bearer " + this.token
+      }
+
+      return this.$http.get(uri, {headers});
+            
     }
   },
   created() {
@@ -123,31 +148,31 @@ export default {
       //I need to check seesion storage so that refreshing does not make me log out.
       this.$router.push('/login');
     }
-    // SETUP some kind of repos and dump this ligic there
-    console.log('getting contacts');
-    this.$http.get('http://localhost:8000/contact', {Authorization: "Bearer " + this.token}).then(response => {
-      console.log('getting contacts');
-      this.contacts = response.body.contacts;
-      console.log(this.contacts);
-    }, response => {
-      // error callback
-    });
-    
-    console.log('getting conversations');
-    this.$http.get('http://localhost:8000/conversation', {Authorization: "Bearer " + this.token}).then(response => {
-      console.log(response);
-      this.conversations = response.body;
-    }, response => {
-      // error callback
-    });
-    
-    console.log('getting invites');
-    this.$http.get('http://localhost:8000/contact/invites', {Authorization: "Bearer " + this.token}).then(response => {
-      console.log(response);
-      this.invites = response.body.contacts;
-    }, response => {
-      // error callback
-    });
+
+    this.getRequest('http://localhost:8000/contact')
+    .then(response => {
+        this.contacts = response.body.contacts;
+        //this.$emit('contactUpdated', response.body.contact);
+      }).catch(response => {
+        console.error('something went wrong getting contacts', response);
+      });
+
+    this.getRequest('http://localhost:8000/contact/invites')
+    .then(response => {
+        this.invites = response.body.contacts;
+        //this.$emit('contactUpdated', response.body.contact);
+      }).catch(response => {
+        console.error('something went wrong getting invites', response);
+      });
+
+    // this.getRequest('http://localhost:8000/conversation')
+    // .then(response => {
+    //     this.conversations = response.body;
+    //     //this.$emit('contactUpdated', response.body.contact);
+    //   }).catch(response => {
+    //     console.error('something went wrong getting conversations', response);
+    //   });
+
   }
 }
 </script>
