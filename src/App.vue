@@ -18,6 +18,7 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       userTonken: '',
+      userAvatar: 'https://robohash.org/asd/?size=100x100',
       username: '',
     }
   },
