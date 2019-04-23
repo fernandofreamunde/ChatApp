@@ -10,23 +10,35 @@
           <li class="sidebar-header">
               Contacts
           </li>
-          <contact v-for="contact in contacts"
-          v-bind:key="contact.email"
+          <contact 
+          v-bind:token="token"
+          v-for="contact in contacts"
+          v-bind:key="contact.id"
+          v-bind:id="contact.id"
           v-bind:contact="contact.contact"
+          v-bind:status="contact.status"
+          v-bind:isInvite="false"
           v-on:click.native="showConversation(contact.conversation)"></contact>
 
           <li class="sidebar-header">
               add contact
           </li>
-          <contactFinder v-bind:token="this.token"></contactFinder>
+          <contactFinder v-bind:token="this.token" 
+          v-on:contactInvited="addContact($event)"></contactFinder>
 
           <li class="sidebar-header">
               invites
           </li>
-          <contact v-for="contact in invites"
-          v-bind:key="contact.email"
+          <contact 
+          v-bind:token="token"
+          v-for="contact in invites"
+          v-bind:key="contact.id"
+          v-bind:id="contact.id"
           v-bind:contact="contact.owner"
-          v-on:click.native="showConversation(contact.conversation)"></contact>
+          v-bind:status="contact.status"
+          v-bind:isInvite="true"
+          v-on:contactUpdated="updateContact($event)"
+          ></contact>
 
       </ul>
 
