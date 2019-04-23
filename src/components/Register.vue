@@ -1,5 +1,5 @@
 <template>
-  <div class="form-signin">
+  <div class="form-signin" v-on:keyup.enter="register">
     <div class="alert alert-danger alert-dismissible fade show" v-if="this.state.errors.length !== 0" role="alert">
       <button type="button" class="close" aria-label="Close" v-on:click="state.errors = []">
         <span aria-hidden="true">×</span>
@@ -81,7 +81,6 @@ export default {
       this.postRequest('http://localhost:8000/login', {"email": this.email,"password": this.password})
       .then(response => {
           console.log('User logged in, Welkome!');
-          //console.log(response); //pickeup jwt
           this.$emit('TokenRecieved', response.body.token);
 
         }).catch(response => {

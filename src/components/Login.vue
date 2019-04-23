@@ -1,5 +1,5 @@
 <template>
-  <div class="form-signin">
+  <div class="form-signin" v-on:keyup.enter="login">
     <div class="alert alert-danger alert-dismissible fade show" v-if="this.state.errors.length !== 0" role="alert">
       <button type="button" class="close" aria-label="Close" v-on:click="state.errors = []">
         <span aria-hidden="true">×</span>
