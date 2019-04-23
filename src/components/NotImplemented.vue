@@ -19,16 +19,7 @@ export default {
     return {
       state: {
         errors: [],
-      },
-      email:'',
-      password:'',
-    }
-  },
-  methods:{
-    login: function(){
-
-      console.log(this.email);
-      console.log(this.password);
+      }
     }
   }
 }

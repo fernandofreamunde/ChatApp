@@ -52,7 +52,6 @@ export default {
   },
   methods:{
     accept() {
-      console.log('accept');
       this.updateContact({status:'accepted'});
       this.state.show = false;
     },
@@ -65,10 +64,8 @@ export default {
 
       this.deleteRequest(uri)
       .then(response => {
-        console.log(response);
         this.$emit('contactdeleted', response.body.contact);
         this.state.show = false;
-
       })
       .catch(response => {
         console.error('something went wrong deleting contact', response);
@@ -81,9 +78,7 @@ export default {
 
       this.putRequest(uri, data)
       .then(response => {
-        console.log(response);
         this.$emit('contactUpdated', response.body.contact);
-
       })
       .catch(response => {
         console.error('something went wrong updating contact', response);
@@ -113,9 +108,6 @@ export default {
 
       return this.$http.delete(uri, {headers});
     }
-  },
-  created() {
-    // console.log(this.contact);
   }
 }
 </script>

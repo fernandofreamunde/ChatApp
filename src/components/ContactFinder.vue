@@ -28,6 +28,7 @@ export default {
     }
   },
   methods:{
+    // Doesnt really search, only adds check later
     search:function(){
 
       this.state.errors = '';
@@ -35,10 +36,7 @@ export default {
         return;
       }
 
-      //query be if email exist and is not a contact yet
-      //if it is then emit event and clear textbox
       this.postRequest('http://localhost:8000/contact', {email:this.searchEmail}).then(response => {
-        console.log(response);
         this.state.success = response.body.message;
         this.$emit('contactInvited', response.body.contact);
 

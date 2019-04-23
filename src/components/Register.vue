@@ -80,7 +80,7 @@ export default {
     login() {
       this.postRequest('http://localhost:8000/login', {"email": this.email,"password": this.password})
       .then(response => {
-          console.log('User logged in, Welkome!');
+          console.log('User logged in, Welcome!');
           this.$emit('TokenRecieved', response.body.token);
 
         }).catch(response => {

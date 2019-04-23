@@ -130,13 +130,9 @@ export default {
       console.log(conversation);
     },
     addContact(contact) {
-      console.log('newcontact');
       this.contacts.push(contact);
     },
     updateContact(contact) {
-      console.log('updated contact');
-      console.log(contact);
-
       if (contact.status == 'accepted') {
         this.contacts.push(contact);
       }
@@ -164,7 +160,6 @@ export default {
     this.getRequest('http://localhost:8000/contact')
     .then(response => {
         this.contacts = response.body.contacts;
-        //this.$emit('contactUpdated', response.body.contact);
       }).catch(response => {
         console.error('something went wrong getting contacts', response);
       });
@@ -172,7 +167,6 @@ export default {
     this.getRequest('http://localhost:8000/contact/invites')
     .then(response => {
         this.invites = response.body.contacts;
-        //this.$emit('contactUpdated', response.body.contact);
       }).catch(response => {
         console.error('something went wrong getting invites', response);
       });
