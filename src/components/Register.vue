@@ -14,13 +14,16 @@
     </div>
             
     <h1 class="h3 mb-3 font-weight-normal">Welcome to BunqChat.</h1>
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <input v-model="email" type="email" name="email"  class="form-control" placeholder="me@some-provider.com" required autofocus>
-    <input v-model="emailConfirm" type="email" name="email-confirm"  class="form-control" placeholder="me@some-provider.com" required>
+    <label for="username" class="sr-only">Username </label>
+    <input v-model="username" type="text" name="username"  class="form-control" placeholder="Username" required autofocus>
+
+    <label for="email" class="sr-only">Email address</label>
+    <input v-model="email" type="email" name="email"  class="form-control" placeholder="Email address" required>
+    <input v-model="emailConfirm" type="email" name="email-confirm"  class="form-control" placeholder="Confirm email address" required>
 
     <label for="pasword" class="sr-only">Password</label>
     <input v-model="password" type="password" name="password" class="form-control" placeholder="Password" required>
-    <input v-model="passwordConfirm" type="password" name="password-confirm" class="form-control" placeholder="Password" required>
+    <input v-model="passwordConfirm" type="password" name="password-confirm" class="form-control" placeholder="Confirm password" required>
 
     <button class="btn btn-lg btn-primary btn-block" v-on:click="register">
         Sign up
@@ -37,6 +40,7 @@ export default {
         errors: [],
       },
       email:'',
+      username:'',
       password:'',
       emailConfirm:'',
       passwordConfirm:'',
@@ -59,15 +63,30 @@ export default {
 
       const formData = {
           "email": this.email,
-          "password": this.password
+          "password": this.password,
+          "username": this.username
       };
                                                               /// this also solves majour issue not sure what it does
       this.$http.post('http://localhost:8000/register', formData, {emulateJSON: true})
       .then(response => {
-          console.log('User logged in, Welkome!');
-          this.$emit('TokenRecieved', response.body.token);
+          console.log('User sucessfully created!');
+          console.log('Logging in...');
+          this.login(formData);
+
         }, response => {
           this.state.errors.push(response.body.error);
+        });
+    },
+    login(formData) {
+      this.$http.post('http://localhost:8000/login', formData, {emulateJSON: true})
+      .then(response => {
+          console.log('User logged in, Welkome!');
+          //console.log(response); //pickeup jwt
+          this.$emit('TokenRecieved', response.body.token);
+
+        }, response => {
+          this.state.errors.push(response.body.error)
+          console.error(response.body);
         });
     }
   }
