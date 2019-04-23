@@ -1,22 +1,67 @@
 <template>
     <div class="contact-finder">
-        <input class="contact-query" v-on:keyup.enter="search" type="text" v-model="searchEmail" placeholder="contact email">
+      <div class="error-report" v-if="this.state.errors.length > 0">
+        {{this.state.errors}}
+      </div>
+      <div class="success" v-if="this.state.success.length > 0">
+        {{this.state.errors}}
+      </div>
+      <input class="contact-query" v-on:keyup.enter="search" type="text" v-model="searchEmail" placeholder="contact email">
     </div>
 </template>
 
 <script>
 export default {
+  props: {
+    token:{
+      type:String,
+      required:false
+    },
+  },
   data () {
     return {
+      state:{
+        errors:'',
+        success:''
+      },
       searchEmail:''
     }
   },
   methods:{
     search:function(){
+
+      this.state.errors = '';
+      if (this.searchEmail.length < 3) {
+        return;
+      }
+
       //query be if email exist and is not a contact yet
       //if it is then emit event and clear textbox
+      this.postRequest('http://localhost:8000/contact', {email:this.searchEmail}).then(response => {
+        console.log(response);
+        this.state.success = response.body.message;
+        this.$emit('contactInvited', response.body.contact);
+
+      })
+      .catch(response => {
+        this.state.errors = response.body.error;
+        console.error(response.body);
+      });
+      
       this.$emit('searchEmail', this.searchEmail);
       this.searchEmail = '';
+    },
+    postRequest(uri, data) {
+
+      let headers = {
+        'Content-Type': 'application/json'
+      };
+
+      if(this.token !== '') {
+        headers['Authorization'] = "Bearer " + this.token
+      }
+
+      return this.$http.post(uri, data, {headers});
     }
   }
 }
@@ -30,5 +75,13 @@ export default {
   background:none; 
   border:none;
   color:#ced4da;
+}
+
+.error-report {
+  color:#ff8686;
+}
+
+.success {
+  color:#8aff86;
 }
 </style>
