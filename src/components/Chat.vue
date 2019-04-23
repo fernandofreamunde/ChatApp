@@ -115,7 +115,23 @@ export default {
       //I need to check seesion storage so that refreshing does not make me log out.
       this.$router.push('/login');
     }
-    console.log(this.contacts);
+    // SETUP some kind of repos and dump this ligic there
+    console.log('getting contacts');
+    this.$http.get('http://localhost:8000/contact', {Authorization: "Bearer " + this.token}).then(response => {
+      console.log('getting contacts');
+      this.contacts = response.body.contacts;
+      console.log(this.contacts);
+    }, response => {
+      // error callback
+    });
+    
+    console.log('getting conversations');
+    this.$http.get('http://localhost:8000/conversation', {Authorization: "Bearer " + this.token}).then(response => {
+      console.log(response);
+      this.conversations = response.body;
+    }, response => {
+      // error callback
+    });
   }
 }
 </script>
