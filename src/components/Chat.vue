@@ -11,18 +11,31 @@
               Contacts
           </li>
           <contact v-for="contact in contacts"
-          v-bind:key="contact.id"
+          v-bind:key="contact.email"
           v-bind:contact="contact"
           v-on:click.native="showConversation(contact.conversation)"></contact>
 
           <li class="sidebar-header">
               add contact
           </li>
-          <contactFinder></contactFinder>
+          <contactFinder v-bind:token="this.token"></contactFinder>
 
       </ul>
 
     </div>
+
+    <div class="sidebar-bottom">
+      <div class="media">
+
+        <img class="rounded-circle mr-3 bg-white" v-bind:src="this.userAvatar" alt="" width="40" height="40">
+
+        <div class="media-body">
+            <h5 class="mb-1 text-white">{{ this.username }}</h5>
+            <div class="mb-1 text-white">{{ this.username }}</div>
+        </div>
+      </div>
+    </div>
+
   </nav>
     
   <div class="main">
@@ -70,60 +83,23 @@ export default {
       type:String,
       required:false
     },
+    username:{
+      type:String,
+      required:false
+    },
+    userAvatar:{
+      type:String,
+      required:false
+    },
   },
   data () {
     return {
       state: {
         errors: [],
       },
-      contacts:[
-        {
-          id: 1,
-          email:'some-email@place.com',
-          conversation:234,
-        },
-        {
-          id: 2,
-          email:'someemail@place.com',
-          conversation:234,
-        },
-        {
-          id: 3,
-          email:'email@place.com',
-          conversation:234,
-        },
-      ],
-      conversation:[
-        {
-          id: 1,
-          contacts:[],
-        },
-        {
-          id: 2,
-          contacts:['someemail@place.com'],
-        },
-        {
-          id: 3,
-          contacts:['email@place.com','someemail@place.com'],
-        },
-      ],
-      invites:[
-        {
-          id: 1,
-          email:'ssssss',
-          accepted:false,
-        },
-        {
-          id: 2,
-          email:'aaaaa',
-          accepted:false,
-        },
-        {
-          id: 3,
-          email:'asdd',
-          accepted:false,
-        },
-      ],
+      contacts:[],
+      conversations:[],
+      invites:[],
       email:'',
       password:'',
     }
@@ -214,6 +190,13 @@ body {
     color: #fff;
 }
 
+.sidebar-bottom {
+  bottom: 0px;
+  position: absolute;
+  min-width: 240px;
+  max-width: 240px;
+  border-top: #1a1a29 solid 1px;
+}
 .main {
     width: 100%;
     min-height: 100vh;
