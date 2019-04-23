@@ -66,28 +66,35 @@ export default {
           "password": this.password,
           "username": this.username
       };
-                                                              /// this also solves majour issue not sure what it does
-      this.$http.post('http://localhost:8000/register', formData, {emulateJSON: true})
+      
+      this.postRequest('http://localhost:8000/register', formData)
       .then(response => {
           console.log('User sucessfully created!');
           console.log('Logging in...');
           this.login(formData);
 
-        }, response => {
+        }).catch(response => {
           this.state.errors.push(response.body.error);
         });
     },
-    login(formData) {
-      this.$http.post('http://localhost:8000/login', formData, {emulateJSON: true})
+    login() {
+      this.postRequest('http://localhost:8000/login', {"email": this.email,"password": this.password})
       .then(response => {
           console.log('User logged in, Welkome!');
           //console.log(response); //pickeup jwt
           this.$emit('TokenRecieved', response.body.token);
 
-        }, response => {
+        }).catch(response => {
           this.state.errors.push(response.body.error)
           console.error(response.body);
         });
+    },
+    postRequest(uri, data) {
+      let headers = {
+        'Content-Type': 'application/json'
+      };
+
+      return this.$http.post(uri, data, {headers});
     }
   }
 }

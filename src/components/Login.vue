@@ -49,18 +49,24 @@ export default {
         "email": this.email,
         "password": this.password
     };
-                                                            /// this also solves majour issue not sure what it does
-    this.$http.post('http://localhost:8000/login', formData, {emulateJSON: true})
+    
+    this.postRequest('http://localhost:8000/login', formData)
     .then(response => {
-        console.log('User logged in, Welkome!');
-        //console.log(response); //pickeup jwt
+        console.log('User logged in, Welcome!');
         this.$emit('TokenRecieved', response.body.token);
 
-      }, response => {
+      }).catch(response => {
         this.state.errors.push(response.body.error)
         console.error(response.body);
       });
     
+    },
+    postRequest(uri, data) {
+      let headers = {
+        'Content-Type': 'application/json'
+      };
+
+      return this.$http.post(uri, data, {headers});
     }
   }
 }
