@@ -12,13 +12,21 @@
           </li>
           <contact v-for="contact in contacts"
           v-bind:key="contact.email"
-          v-bind:contact="contact"
+          v-bind:contact="contact.contact"
           v-on:click.native="showConversation(contact.conversation)"></contact>
 
           <li class="sidebar-header">
               add contact
           </li>
           <contactFinder v-bind:token="this.token"></contactFinder>
+
+          <li class="sidebar-header">
+              invites
+          </li>
+          <contact v-for="contact in invites"
+          v-bind:key="contact.email"
+          v-bind:contact="contact.owner"
+          v-on:click.native="showConversation(contact.conversation)"></contact>
 
       </ul>
 
@@ -129,6 +137,14 @@ export default {
     this.$http.get('http://localhost:8000/conversation', {Authorization: "Bearer " + this.token}).then(response => {
       console.log(response);
       this.conversations = response.body;
+    }, response => {
+      // error callback
+    });
+    
+    console.log('getting invites');
+    this.$http.get('http://localhost:8000/contact/invites', {Authorization: "Bearer " + this.token}).then(response => {
+      console.log(response);
+      this.invites = response.body.contacts;
     }, response => {
       // error callback
     });

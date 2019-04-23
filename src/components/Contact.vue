@@ -1,6 +1,6 @@
 <template>
   <li class="sidebar-item">
-    <div class="contact-list-item">{{ contact.contact.username }} <small>{{ contact.contact.email }}</small> </div>
+    <div class="contact-list-item">{{ contact.username }} <small>{{ contact.email }}</small> </div>
   </li>
 </template>
 
