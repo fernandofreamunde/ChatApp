@@ -89,22 +89,20 @@
 import Conversation from "./Conversation.vue";
 import Contact from "./Contact.vue";
 import ContactFinder from "./ContactFinder.vue";
-import MessageInput from "./MessageInput.vue";
 
 export default {
   components:{
       'conversation':Conversation,
       'contact':Contact,
       'contactFinder':ContactFinder,
-      'messageInput':MessageInput,
   },
   props: {
     token:{
       type:String,
       required:false
     },
-    username:{
-      type:String,
+    currentUser:{
+      type:Object,
       required:false
     },
     userAvatar:{
