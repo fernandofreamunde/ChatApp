@@ -52,7 +52,9 @@ export default {
   },
   methods:{
     accept() {
+      console.log(this.contact);
       this.updateContact({status:'accepted'});
+      this.postRequest('http://localhost:8000/conversation', {contact:this.contact})
       this.state.show = false;
     },
     reject() {
@@ -95,6 +97,18 @@ export default {
       }
 
       return this.$http.put(uri, data, {headers});
+    },
+    postRequest(uri, data) {
+
+      let headers = {
+        'Content-Type': 'application/json'
+      };
+
+      if(this.token !== '') {
+        headers['Authorization'] = "Bearer " + this.token
+      }
+
+      return this.$http.post(uri, data, {headers});
     },
     deleteRequest(uri) {
 

@@ -18,7 +18,7 @@
           v-bind:contact="contact.contact"
           v-bind:status="contact.status"
           v-bind:isInvite="false"
-          v-on:click.native="showConversation(contact.conversation)"></contact>
+          v-on:click.native="showConversation({owner:contact.owner, contact:contact.contact})"></contact>
 
           <li class="sidebar-header">
               add contact
@@ -47,11 +47,11 @@
     <div class="sidebar-bottom">
       <div class="media">
 
-        <img class="rounded-circle mr-3 bg-white" v-bind:src="this.userAvatar" alt="" width="40" height="40">
+        <img class="rounded-circle mr-3 bg-white" v-bind:src="this.currentUser.avatar" alt="" width="40" height="40">
 
         <div class="media-body">
-            <h5 class="mb-1 text-white">{{ this.username }}</h5>
-            <div class="mb-1 text-white">{{ this.username }}</div>
+            <h5 class="mb-1 text-white">{{ this.currentUser.username }}</h5>
+            <div class="mb-1 text-white">{{ this.currentUser.email }}</div>
         </div>
       </div>
     </div>
@@ -75,8 +75,12 @@
      <main class="container-fluid">
         <div class="row">
           <div class="col">
-            <conversation></conversation>
-            <messageInput></messageInput>
+            <conversation 
+            v-bind:token="token"
+            v-bind:conversation="conversation"
+            v-bind:currentUser="currentUser"
+            v-bind:contact="contact"
+            ></conversation>
           </div>
         </div>
      </main>
@@ -116,7 +120,9 @@ export default {
         errors: [],
       },
       contacts:[],
-      conversations:[],
+      contact:{},
+      conversation:{id:0, messages:[]},
+      messages:[],
       invites:[],
       email:'',
       password:'',
@@ -124,8 +130,13 @@ export default {
   },
   methods:{
     showConversation(conversation) {
-      //load conversation based on this contact
-      console.log(conversation);
+      this.contact = conversation.contact;
+
+      this.getRequest('http://localhost:8000/conversation/'+ conversation.contact.email)
+      .then(response => {
+        this.conversation = response.body.conversation
+      })
+      .catch();
     },
     addContact(contact) {
       this.contacts.push(contact);
