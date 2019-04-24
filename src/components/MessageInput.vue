@@ -9,6 +9,16 @@
 <script>
 
 export default {
+  props: {
+    token:{
+      type:String,
+      required:true
+    },
+    conversationId:{
+      type:Number,
+      required:true
+    }
+  },
   data () {
     return {
       state: {
@@ -23,16 +33,27 @@ export default {
         console.log('nothing to be done!');
         return;
       }
-      console.log(this.message);
-      console.log('post message to BE');
+
+      this.postRequest('http://localhost:8000/conversation/'+this.conversationId+'/message', {message:this.message})
+      .then(resonense => {
+        this.$emit('messagePosted', resonense.body.message);
+        this.message='';
+      })
       //emit evend new message sent
       this.message='';
-    }
-  },
-  created() {
-    //this.state.isAuthor = this.message.author == "me";
-    //console.log(this.message);
+    },
+    postRequest(uri, data) {
 
+      let headers = {
+        'Content-Type': 'application/json'
+      };
+
+      if(this.token !== '') {
+        headers['Authorization'] = "Bearer " + this.token
+      }
+
+      return this.$http.post(uri, data, {headers});
+    },
   }
 }
 </script>

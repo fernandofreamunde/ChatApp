@@ -14,6 +14,10 @@ export default {
         type:Object,
         required:true
     },
+    currentUserEmail:{
+        type:String,
+        required:true
+    },
   },
   data () {
     return {
@@ -25,11 +29,7 @@ export default {
   methods:{
   },
   created() {
-    this.state.isAuthor = this.message.author == "me";
-    console.log(this.message);
-    //content
-    //author
-    //timestamp
+    this.state.isAuthor = this.message.author.email == this.currentUserEmail;
   }
 }
 </script>
