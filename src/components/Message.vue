@@ -38,5 +38,6 @@ export default {
 
 .author {
   text-align: right;
+  background-color: #eee;
 }
 </style>
