@@ -19,8 +19,14 @@
     v-on:messagePosted="newMessage($event)"
     ></messageInput>
   </div>
-  <div class="card" v-else>
-    Select a conversation
+  <div class="card stiky" v-else>
+    <div class="card-header">
+        <h3 class="card-title">Select a conversation</h3>
+        <h6 class="card-subtitle text-muted">Click on one of your established contacts</h6>
+    </div>
+    <div class="card-body empty-message">
+        <h3>Select a conversation</h3>
+    </div>
   </div>
 </template>
 
@@ -62,8 +68,35 @@ export default {
   methods:{
     newMessage(message) {
       this.conversation.messages.push(message);
+    },
+    getRequest(uri) {
+
+      let headers = {
+        'Content-Type': 'application/json'
+      };
+
+      if(this.token !== '') {
+        headers['Authorization'] = "Bearer " + this.token
+      }
+
+      return this.$http.get(uri, {headers});
+            
     }
   },
+  mounted() {
+     window.setInterval(() => {
+       if(this.conversation.id !== 0){
+         this.getRequest('http://localhost:8000/conversation/'+this.conversation.id+'/messages')
+        .then(response => {
+            this.conversation.messages = response.body.messages;
+          }).catch(response => {
+            console.error('something went wrong getting messages!', response);
+          });
+
+       }
+      //this.countDown();
+    },5000);
+  }
 }
 
 function findWithAttr(array, attr, value) {
@@ -87,5 +120,10 @@ function findWithAttr(array, attr, value) {
 
 .scrollable{
   overflow-y: scroll;
+}
+
+.empty-message {
+  text-align: center;
+  margin-top: 20%
 }
 </style>
