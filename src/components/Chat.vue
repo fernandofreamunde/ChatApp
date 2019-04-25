@@ -18,7 +18,7 @@
           v-bind:contact="contact.contact"
           v-bind:status="contact.status"
           v-bind:isInvite="false"
-          v-on:click.native="showConversation({owner:contact.owner, contact:contact.contact})"></contact>
+          v-on:click.native="showConversation({owner:contact.owner, contact:contact.contact, status:contact.status})"></contact>
 
           <li class="sidebar-header">
               add contact
@@ -130,6 +130,9 @@ export default {
   },
   methods:{
     showConversation(conversation) {
+      if (conversation.status == 'invited') {
+        return;
+      }
       this.contact = conversation.contact;
 
       this.getRequest('http://localhost:8000/conversation/'+ conversation.contact.email)
@@ -179,15 +182,6 @@ export default {
       }).catch(response => {
         console.error('something went wrong getting invites', response);
       });
-
-    // this.getRequest('http://localhost:8000/conversation')
-    // .then(response => {
-    //     this.conversations = response.body;
-    //     //this.$emit('contactUpdated', response.body.contact);
-    //   }).catch(response => {
-    //     console.error('something went wrong getting conversations', response);
-    //   });
-
   }
 }
 </script>
