@@ -31,6 +31,7 @@
 
 <script>
 import Message from "./Message.vue";
+import Requests from "../mixins/requests.js";
 import MessageInput from "./MessageInput.vue";
 
 export default {
@@ -67,17 +68,6 @@ export default {
   methods: {
     newMessage(message) {
       this.conversation.messages.push(message);
-    },
-    getRequest(uri) {
-      let headers = {
-        "Content-Type": "application/json"
-      };
-
-      if (this.token !== "") {
-        headers["Authorization"] = "Bearer " + this.token;
-      }
-
-      return this.$http.get(uri, { headers });
     }
   },
   mounted() {
@@ -97,7 +87,8 @@ export default {
       }
       //this.countDown();
     }, 5000);
-  }
+  },
+  mixins: [Requests]
 };
 
 function findWithAttr(array, attr, value) {

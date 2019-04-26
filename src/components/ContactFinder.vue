@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import Requests from "../mixins/requests.js";
+
 export default {
   props: {
     token: {
@@ -51,19 +53,9 @@ export default {
 
       this.$emit("searchEmail", this.searchEmail);
       this.searchEmail = "";
-    },
-    postRequest(uri, data) {
-      let headers = {
-        "Content-Type": "application/json"
-      };
-
-      if (this.token !== "") {
-        headers["Authorization"] = "Bearer " + this.token;
-      }
-
-      return this.$http.post(uri, data, { headers });
     }
-  }
+  },
+  mixins:[Requests]
 };
 </script>
 

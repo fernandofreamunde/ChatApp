@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import Requests from "../mixins/requests.js";
+
 export default {
   data() {
     return {
@@ -73,15 +75,9 @@ export default {
           this.state.errors.push(response.body.error);
           console.error(response.body);
         });
-    },
-    postRequest(uri, data) {
-      let headers = {
-        "Content-Type": "application/json"
-      };
-
-      return this.$http.post(uri, data, { headers });
     }
-  }
+  },
+  mixins:[Requests]
 };
 </script>
 

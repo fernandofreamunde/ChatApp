@@ -91,6 +91,7 @@
 import Conversation from "./Conversation.vue";
 import Contact from "./Contact.vue";
 import ContactFinder from "./ContactFinder.vue";
+import Requests from "../mixins/requests.js";
 
 export default {
   components: {
@@ -148,17 +149,6 @@ export default {
       if (contact.status == "accepted") {
         this.contacts.push(contact);
       }
-    },
-    getRequest(uri) {
-      let headers = {
-        "Content-Type": "application/json"
-      };
-
-      if (this.token !== "") {
-        headers["Authorization"] = "Bearer " + this.token;
-      }
-
-      return this.$http.get(uri, { headers });
     }
   },
   created() {
@@ -182,7 +172,8 @@ export default {
       .catch(response => {
         console.error("something went wrong getting invites", response);
       });
-  }
+  },
+  mixins: [Requests]
 };
 </script>
 

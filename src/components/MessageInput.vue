@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import Requests from "../mixins/requests.js";
+
 export default {
   props: {
     token: {
@@ -44,19 +46,9 @@ export default {
       });
       //emit evend new message sent
       this.message = "";
-    },
-    postRequest(uri, data) {
-      let headers = {
-        "Content-Type": "application/json"
-      };
-
-      if (this.token !== "") {
-        headers["Authorization"] = "Bearer " + this.token;
-      }
-
-      return this.$http.post(uri, data, { headers });
     }
-  }
+  },
+  mixins:[Requests]
 };
 </script>
 
