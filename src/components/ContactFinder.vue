@@ -1,68 +1,70 @@
 <template>
-    <div class="contact-finder">
-      <div class="error-report" v-if="this.state.errors.length > 0">
-        {{this.state.errors}}
-      </div>
-      <div class="success" v-if="this.state.success.length > 0">
-        {{this.state.errors}}
-      </div>
-      <input class="contact-query" v-on:keyup.enter="search" type="text" v-model="searchEmail" placeholder="contact email">
-    </div>
+  <div class="contact-finder">
+    <div class="error-report" v-if="this.state.errors.length > 0">{{this.state.errors}}</div>
+    <div class="success" v-if="this.state.success.length > 0">{{this.state.errors}}</div>
+    <input
+      class="contact-query"
+      v-on:keyup.enter="search"
+      type="text"
+      v-model="searchEmail"
+      placeholder="contact email"
+    >
+  </div>
 </template>
 
 <script>
 export default {
   props: {
-    token:{
-      type:String,
-      required:false
-    },
-  },
-  data () {
-    return {
-      state:{
-        errors:'',
-        success:''
-      },
-      searchEmail:''
+    token: {
+      type: String,
+      required: false
     }
   },
-  methods:{
+  data() {
+    return {
+      state: {
+        errors: "",
+        success: ""
+      },
+      searchEmail: ""
+    };
+  },
+  methods: {
     // Doesnt really search, only adds check later
-    search:function(){
-
-      this.state.errors = '';
+    search: function() {
+      this.state.errors = "";
       if (this.searchEmail.length < 3) {
         return;
       }
 
-      this.postRequest('http://localhost:8000/contact', {email:this.searchEmail}).then(response => {
-        this.state.success = response.body.message;
-        this.$emit('contactInvited', response.body.contact);
-
+      this.postRequest("http://localhost:8000/contact", {
+        email: this.searchEmail
       })
-      .catch(response => {
-        this.state.errors = response.body.error;
-        console.error(response.body);
-      });
-      
-      this.$emit('searchEmail', this.searchEmail);
-      this.searchEmail = '';
+        .then(response => {
+          this.state.success = response.body.message;
+          this.$emit("contactInvited", response.body.contact);
+        })
+        .catch(response => {
+          this.state.errors = response.body.error;
+          console.error(response.body);
+        });
+
+      this.$emit("searchEmail", this.searchEmail);
+      this.searchEmail = "";
     },
     postRequest(uri, data) {
-
       let headers = {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       };
 
-      if(this.token !== '') {
-        headers['Authorization'] = "Bearer " + this.token
+      if (this.token !== "") {
+        headers["Authorization"] = "Bearer " + this.token;
       }
 
-      return this.$http.post(uri, data, {headers});
+      return this.$http.post(uri, data, { headers });
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -70,16 +72,16 @@ export default {
   margin-left: 1.5em;
 }
 .contact-query {
-  background:none; 
-  border:none;
-  color:#ced4da;
+  background: none;
+  border: none;
+  color: #ced4da;
 }
 
 .error-report {
-  color:#ff8686;
+  color: #ff8686;
 }
 
 .success {
-  color:#8aff86;
+  color: #8aff86;
 }
 </style>

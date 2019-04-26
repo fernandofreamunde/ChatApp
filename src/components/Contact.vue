@@ -1,10 +1,14 @@
 <template>
   <li class="sidebar-item" v-if="state.show">
-    <div class="contact-list-item">{{ contact.username }} 
+    <div class="contact-list-item">
+      {{ contact.username }}
       <div>
-        <small>{{ contact.email }}</small> 
+        <small>{{ contact.email }}</small>
         <span v-if="status == 'invited' && isInvite == false" class="badge badge-secondary">Invited</span>
-        <span v-else-if="status == 'rejected' && isInvite == false" class="badge badge-danger">Rejected</span>
+        <span
+          v-else-if="status == 'rejected' && isInvite == false"
+          class="badge badge-danger"
+        >Rejected</span>
       </div>
       <div class="constrols" v-if="isInvite">
         <span class="badge badge-pill badge-success clickable" v-on:click="accept">Accept</span>
@@ -18,118 +22,114 @@
 </template>
 
 <script>
-
 export default {
   props: {
-    contact:{
-        type:Object,
-        required:true
+    contact: {
+      type: Object,
+      required: true
     },
-    isInvite:{
-        type:Boolean,
-        required:true
+    isInvite: {
+      type: Boolean,
+      required: true
     },
-    status:{
-        type:String,
-        required:true
+    status: {
+      type: String,
+      required: true
     },
-    id:{
-        type:Number,
-        required:true
+    id: {
+      type: Number,
+      required: true
     },
-    token:{
-      type:String,
-      required:false
-    },
+    token: {
+      type: String,
+      required: false
+    }
   },
-  data () {
+  data() {
     return {
       state: {
         errors: [],
-        show:true,
-      },
-    }
+        show: true
+      }
+    };
   },
-  methods:{
+  methods: {
     accept() {
       console.log(this.contact);
-      this.updateContact({status:'accepted'});
-      this.postRequest('http://localhost:8000/conversation', {contact:this.contact})
+      this.updateContact({ status: "accepted" });
+      this.postRequest("http://localhost:8000/conversation", {
+        contact: this.contact
+      });
       this.state.show = false;
     },
     reject() {
-      this.updateContact({status:'rejected'});
+      this.updateContact({ status: "rejected" });
       this.state.show = false;
     },
     deleteInvite() {
-      const uri = 'http://localhost:8000/contact/'+this.id;
+      const uri = "http://localhost:8000/contact/" + this.id;
 
       this.deleteRequest(uri)
-      .then(response => {
-        this.$emit('contactdeleted', response.body.contact);
-        this.state.show = false;
-      })
-      .catch(response => {
-        console.error('something went wrong deleting contact', response);
-      });
-
+        .then(response => {
+          this.$emit("contactdeleted", response.body.contact);
+          this.state.show = false;
+        })
+        .catch(response => {
+          console.error("something went wrong deleting contact", response);
+        });
     },
     updateContact(data) {
-
-      const uri = 'http://localhost:8000/contact/'+this.id;
+      const uri = "http://localhost:8000/contact/" + this.id;
 
       this.putRequest(uri, data)
-      .then(response => {
-        this.$emit('contactUpdated', response.body.contact);
-      })
-      .catch(response => {
-        console.error('something went wrong updating contact', response);
-      });
+        .then(response => {
+          this.$emit("contactUpdated", response.body.contact);
+        })
+        .catch(response => {
+          console.error("something went wrong updating contact", response);
+        });
     },
     putRequest(uri, data) {
-
       let headers = {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       };
 
-      if(this.token !== '') {
-        headers['Authorization'] = "Bearer " + this.token
+      if (this.token !== "") {
+        headers["Authorization"] = "Bearer " + this.token;
       }
 
-      return this.$http.put(uri, data, {headers});
+      return this.$http.put(uri, data, { headers });
     },
     postRequest(uri, data) {
-
       let headers = {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       };
 
-      if(this.token !== '') {
-        headers['Authorization'] = "Bearer " + this.token
+      if (this.token !== "") {
+        headers["Authorization"] = "Bearer " + this.token;
       }
 
-      return this.$http.post(uri, data, {headers});
+      return this.$http.post(uri, data, { headers });
     },
     deleteRequest(uri) {
-
       let headers = {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       };
 
-      if(this.token !== '') {
-        headers['Authorization'] = "Bearer " + this.token
+      if (this.token !== "") {
+        headers["Authorization"] = "Bearer " + this.token;
       }
 
-      return this.$http.delete(uri, {headers});
+      return this.$http.delete(uri, { headers });
     }
   }
-}
+};
 </script>
 
 <style scoped>
 .contact-list-item {
   color: #cecece;
-  margin-left:1.5em;
+  margin-left: 1.5em;
 }
 
 .sidebar-item {
