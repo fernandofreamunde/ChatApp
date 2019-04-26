@@ -7,17 +7,15 @@
         </a>
 
         <ul class="sidebar-nav">
-          <li class="sidebar-header">Contacts</li>
-          <contact
+          <li class="sidebar-header">Conversations</li>
+          <conversationItem
             v-bind:token="token"
-            v-for="contact in contacts"
-            v-bind:key="contact.id"
-            v-bind:id="contact.id"
-            v-bind:contact="contact.contact"
-            v-bind:status="contact.status"
-            v-bind:isInvite="false"
-            v-on:click.native="showConversation({owner:contact.owner, contact:contact.contact, status:contact.status})"
-          ></contact>
+            v-bind:currentUser="currentUser"
+            v-for="convo in conversations"
+            v-bind:key="convo.id"
+            v-bind:convo="convo"
+            v-on:click.native="showConversation(convo)"
+          ></conversationItem>
 
           <li class="sidebar-header">add contact</li>
           <contactFinder v-bind:token="this.token" v-on:contactInvited="addContact($event)"></contactFinder>
@@ -25,12 +23,11 @@
           <li class="sidebar-header">invites</li>
           <contact
             v-bind:token="token"
+            v-bind:currentUser="currentUser"
             v-for="contact in invites"
             v-bind:key="contact.id"
-            v-bind:id="contact.id"
-            v-bind:contact="contact.owner"
-            v-bind:status="contact.status"
-            v-bind:isInvite="true"
+            v-bind:info="contact"
+            v-bind:owner="contact.owner"
             v-on:contactUpdated="updateContact($event)"
           ></contact>
         </ul>
@@ -90,6 +87,7 @@
 <script>
 import Conversation from "./Conversation.vue";
 import Contact from "./Contact.vue";
+import ConversationItem from "./ConversationItem.vue";
 import ContactFinder from "./ContactFinder.vue";
 import Requests from "../mixins/requests.js";
 
@@ -97,7 +95,8 @@ export default {
   components: {
     conversation: Conversation,
     contact: Contact,
-    contactFinder: ContactFinder
+    contactFinder: ContactFinder,
+    conversationItem: ConversationItem
   },
   props: {
     token: {
@@ -120,6 +119,7 @@ export default {
       },
       contacts: [],
       contact: {},
+      conversations: [],
       conversation: { id: 0, messages: [] },
       messages: [],
       invites: [],
@@ -129,21 +129,14 @@ export default {
   },
   methods: {
     showConversation(conversation) {
-      if (conversation.status == "invited") {
-        return;
-      }
-      this.contact = conversation.contact;
-
-      this.getRequest(
-        "http://localhost:8000/conversation/" + conversation.contact.email
-      )
+      this.getRequest("http://localhost:8000/conversation/" + conversation.id)
         .then(response => {
           this.conversation = response.body.conversation;
         })
         .catch();
     },
     addContact(contact) {
-      this.contacts.push(contact);
+      this.invites.push(contact);
     },
     updateContact(contact) {
       if (contact.status == "accepted") {
@@ -156,6 +149,16 @@ export default {
       //I need to check seesion storage so that refreshing does not make me log out.
       this.$router.push("/login");
     }
+
+    this.getRequest("http://localhost:8000/conversation")
+      .then(response => {
+        this.conversations = response.body.conversations;
+
+        console.log(response.body.conversations);
+      })
+      .catch(response => {
+        console.error("something went wrong getting contacts", response);
+      });
 
     this.getRequest("http://localhost:8000/contact")
       .then(response => {

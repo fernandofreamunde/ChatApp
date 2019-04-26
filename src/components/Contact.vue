@@ -4,17 +4,20 @@
       {{ contact.username }}
       <div>
         <small>{{ contact.email }}</small>
-        <span v-if="status == 'invited' && isInvite == false" class="badge badge-secondary">Invited</span>
         <span
-          v-else-if="status == 'rejected' && isInvite == false"
+          v-if="info.status == 'invited' && !state.amOwner == false"
+          class="badge badge-secondary"
+        >Invited</span>
+        <span
+          v-else-if="info.status == 'rejected' && !state.amOwner == false"
           class="badge badge-danger"
         >Rejected</span>
       </div>
-      <div class="constrols" v-if="isInvite">
+      <div class="constrols" v-if="!state.amOwner">
         <span class="badge badge-pill badge-success clickable" v-on:click="accept">Accept</span>
         <span class="badge badge-pill badge-danger clickable" v-on:click="reject">Reject</span>
       </div>
-      <div class="constrols" v-if="!isInvite && status == 'rejected'">
+      <div class="constrols" v-if="state.amOwner && info.status == 'rejected'">
         <span class="badge badge-pill badge-danger clickable" v-on:click="deleteInvite">Delete</span>
       </div>
     </div>
@@ -26,20 +29,16 @@ import Requests from "../mixins/requests.js";
 
 export default {
   props: {
-    contact: {
+    currentUser: {
       type: Object,
       required: true
     },
-    isInvite: {
-      type: Boolean,
+    info: {
+      type: Object,
       required: true
     },
-    status: {
-      type: String,
-      required: true
-    },
-    id: {
-      type: Number,
+    owner: {
+      type: Object,
       required: true
     },
     token: {
@@ -51,13 +50,14 @@ export default {
     return {
       state: {
         errors: [],
-        show: true
-      }
+        show: true,
+        amOwner: false
+      },
+      contact: {}
     };
   },
   methods: {
     accept() {
-      console.log(this.contact);
       this.updateContact({ status: "accepted" });
       this.postRequest("http://localhost:8000/conversation", {
         contact: this.contact
@@ -69,7 +69,7 @@ export default {
       this.state.show = false;
     },
     deleteInvite() {
-      const uri = "http://localhost:8000/contact/" + this.id;
+      const uri = "http://localhost:8000/contact/" + this.info.id;
 
       this.deleteRequest(uri)
         .then(response => {
@@ -81,7 +81,7 @@ export default {
         });
     },
     updateContact(data) {
-      const uri = "http://localhost:8000/contact/" + this.id;
+      const uri = "http://localhost:8000/contact/" + this.info.id;
 
       this.putRequest(uri, data)
         .then(response => {
@@ -92,7 +92,16 @@ export default {
         });
     }
   },
-  mixins:[Requests]
+  created() {
+    this.state.amOwner = this.owner.email == this.currentUser.email;
+    this.contact = this.info.owner;
+    if (this.state.amOwner) {
+      this.contact = this.info.contact;
+    }
+    console.log("SOME INFO FO YU");
+    console.log(this.info);
+  },
+  mixins: [Requests]
 };
 </script>
 

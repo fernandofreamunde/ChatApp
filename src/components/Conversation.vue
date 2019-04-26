@@ -44,10 +44,6 @@ export default {
       type: Object,
       required: true
     },
-    contact: {
-      type: Object,
-      required: true
-    },
     currentUser: {
       type: Object,
       required: true
@@ -67,8 +63,19 @@ export default {
   },
   methods: {
     newMessage(message) {
+      console.log(this.conversation);
       this.conversation.messages.push(message);
     }
+  },
+  updated() {
+    const currentUserIndex = findWithAttr(
+      this.conversation.participants,
+      "email",
+      this.currentUser.email
+    );
+    this.contact = this.conversation.participants[
+      currentUserIndex === 0 ? 1 : 0
+    ];
   },
   mounted() {
     window.setInterval(() => {
@@ -85,7 +92,6 @@ export default {
             console.error("something went wrong getting messages!", response);
           });
       }
-      //this.countDown();
     }, 5000);
   },
   mixins: [Requests]
