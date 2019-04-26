@@ -98,8 +98,6 @@ export default {
     if (this.state.amOwner) {
       this.contact = this.info.contact;
     }
-    console.log("SOME INFO FO YU");
-    console.log(this.info);
   },
   mixins: [Requests]
 };
