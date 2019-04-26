@@ -4,7 +4,7 @@
       <h3 class="card-title">{{ contact.username }}</h3>
       <h6 class="card-subtitle text-muted">{{ contact.email }}</h6>
     </div>
-    <div class="card-body scrollable">
+    <div class="card-body scrollable" ref="messageLog">
       <message
         v-for="message in this.conversation.messages"
         v-bind:key="message.id"
@@ -63,8 +63,12 @@ export default {
   },
   methods: {
     newMessage(message) {
-      console.log(this.conversation);
+      this.scrollToEnd();
       this.conversation.messages.push(message);
+    },
+    scrollToEnd: function() {
+      var messagelog = this.$refs.messageLog;
+      messagelog.scrollTop = messagelog.scrollHeight;
     }
   },
   updated() {
@@ -76,6 +80,8 @@ export default {
     this.contact = this.conversation.participants[
       currentUserIndex === 0 ? 1 : 0
     ];
+
+    this.scrollToEnd();
   },
   mounted() {
     window.setInterval(() => {
