@@ -1,6 +1,7 @@
 <template>
   <div class="card stiky" v-if="state.show">
     <div class="card-header">
+      <button class="float-right" v-if="state.page < state.pageCount" v-on:click="loadOldMessages">load older messages</button>
       <h3 class="card-title">{{ contact.username }}</h3>
       <h6 class="card-subtitle text-muted">{{ contact.email }}</h6>
     </div>
@@ -58,6 +59,7 @@ export default {
       state: {
         errors: [],
         pageCount: 0,
+        page: 1,
         show:false,
       },
       contact: {},
@@ -101,10 +103,29 @@ export default {
           );
         });
     },
+    loadOldMessages() {
+      console.log("load older messages");
+      console.log(this.state.page, this.state.pageCount);
+
+      this.state.page = this.state.page + 1;
+      
+      this.pullMessages(this.state.page)
+        .then(response => {
+          response.body.messages.forEach(element => {
+          this.messages = prepend(element, this.messages);
+          })
+        })
+        .catch(response => {
+          
+        this.state.page = this.state.page - 1;
+        })
+      },
     init(conversation) {
         this.conversation = conversation;
         console.log(conversation);
         this.state.show = true;
+        this.state.page = 1;
+        this.state.pageCount = 0;
 
       const currentUserIndex = findWithAttr(
         conversation.participants,
@@ -138,7 +159,7 @@ export default {
       currentUserIndex === 0 ? 1 : 0
     ];
 
-    this.scrollToEnd();
+    //this.scrollToEnd();
   },
   mounted() {
     // window.setInterval(() => {
@@ -168,6 +189,12 @@ function findWithAttr(array, attr, value) {
   }
   return -1;
 }
+
+function prepend(value, array) {
+  var newArray = array.slice();
+  newArray.unshift(value);
+  return newArray;
+}
 </script>
 
 <style scoped>
@@ -185,5 +212,9 @@ function findWithAttr(array, attr, value) {
 .empty-message {
   text-align: center;
   margin-top: 20%;
+}
+
+.float-right {
+  float: right;
 }
 </style>
