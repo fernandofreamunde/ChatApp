@@ -12,13 +12,13 @@ You have the freedom to use any framework and libraries;
 ### Setup
 
 Normally I like to deliver this kind of project with a simple setup.sh script that sets the project up in one go.
-But this time I will not do that, maiinly because this is running with Vue and Symfony that provide servers of their own.
+But this time I will not do that, mainly because this is running with Vue and Symfony that provide servers of their own.
 
 Therefore this project has a very basic setup that has some requirements. If you can use the Servers of Symfony and Vue(npm) on your machine you should be able to run the project, please take a look at the documentation of [Vue-cli](https://cli.vuejs.org/) and [Symfony](https://symfony.com/doc/current/setup/built_in_web_server.html) if you are havin trouble.
 
 #### Steps
 - [ ] clone this project
-- [ ] clone the Backend of it... https://github.com/fernandofreamunde/ChatAppServer
+- [ ] clone the [Backend](https://github.com/fernandofreamunde/ChatAppServer) of it...
 - [ ] on the Backend folder run `composer install`
 - [ ] on the Backend folder run `php bin/console doctrine:database:create`
 - [ ] on the Backend folder run `php bin/console doctrine:migrations:migrate`
