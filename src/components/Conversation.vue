@@ -1,5 +1,5 @@
 <template>
-  <div class="card stiky" v-if="this.conversation.id !== 0">
+  <div class="card stiky" v-if="state.show">
     <div class="card-header">
       <h3 class="card-title">{{ contact.username }}</h3>
       <h6 class="card-subtitle text-muted">{{ contact.email }}</h6>
@@ -56,9 +56,12 @@ export default {
   data() {
     return {
       state: {
-        errors: []
+        errors: [],
+        pageCount: 0,
+        show:false,
       },
-      contact: {}
+      contact: {},
+      messages: []
     };
   },
   methods: {
@@ -66,12 +69,66 @@ export default {
       this.scrollToEnd();
       this.conversation.messages.push(message);
     },
-    scrollToEnd: function() {
+    scrollToEnd() {
       var messagelog = this.$refs.messageLog;
       messagelog.scrollTop = messagelog.scrollHeight;
-    }
+    },
+    pullMessages(page = 0) {
+      let uri =
+        "http://localhost:8000/conversation/" +
+        this.conversation.id +
+        "/messages";
+
+      if (page > 0) {
+        uri += "?page=" + page;
+      }
+
+      return this.getRequest(uri);
+    },
+    getConversationPageCount() {
+      this.getRequest(
+        "http://localhost:8000/conversation/" +
+          this.conversation.id +
+          "/messages/pages"
+      )
+        .then(response => {
+          this.state.pageCount = response.body.pages;
+        })
+        .catch(response => {
+          console.error(
+            "something went wrong getting message pages!",
+            response
+          );
+        });
+    },
+    init(conversation) {
+        this.conversation = conversation;
+        console.log(conversation);
+        this.state.show = true;
+
+      const currentUserIndex = findWithAttr(
+        conversation.participants,
+        "email",
+        this.currentUser.email
+      );
+
+      this.contact = conversation.participants[
+        currentUserIndex === 0 ? 1 : 0
+      ];
+      this.conversationId = conversation.id;
+
+      this.pullMessages()
+        .then(response => {
+          this.messages = response.body.messages.reverse();
+        });
+
+       console.log( this.messages);
+       this.getConversationPageCount();
+      //this.scrollToEnd();
+    },
   },
   updated() {
+    this.state.show = true;
     const currentUserIndex = findWithAttr(
       this.conversation.participants,
       "email",
@@ -84,21 +141,21 @@ export default {
     this.scrollToEnd();
   },
   mounted() {
-    window.setInterval(() => {
-      if (this.conversation.id !== 0) {
-        this.getRequest(
-          "http://localhost:8000/conversation/" +
-            this.conversation.id +
-            "/messages"
-        )
-          .then(response => {
-            this.conversation.messages = response.body.messages;
-          })
-          .catch(response => {
-            console.error("something went wrong getting messages!", response);
-          });
-      }
-    }, 5000);
+    // window.setInterval(() => {
+    //   if (this.conversation.id !== 0) {
+    //     this.getRequest(
+    //       "http://localhost:8000/conversation/" +
+    //         this.conversation.id +
+    //         "/messages"
+    //     )
+    //       .then(response => {
+    //         this.conversation.messages = response.body.messages;
+    //       })
+    //       .catch(response => {
+    //         console.error("something went wrong getting messages!", response);
+    //       });
+    //   }
+    // }, 5000);
   },
   mixins: [Requests]
 };
