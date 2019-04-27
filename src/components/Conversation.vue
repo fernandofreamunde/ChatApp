@@ -69,11 +69,33 @@ export default {
   methods: {
     newMessage(message) {
       this.scrollToEnd();
-      this.conversation.messages.push(message);
+      this.messages.push(message);
     },
     scrollToEnd() {
       var messagelog = this.$refs.messageLog;
       messagelog.scrollTop = messagelog.scrollHeight;
+    },
+    lastMessageAt() {
+      return this.messages[this.messages.length - 1]
+        .id;
+    },
+    getNewMessages() {
+      this.getRequest(
+        "http://localhost:8000/conversation/" +
+          this.conversation.id +
+          "/messages?since=" +
+          this.lastMessageAt()
+      )
+        .then(response => {
+          response.body.messages.forEach(element => {
+            this.messages.push(element);
+
+            this.scrollToEnd();
+          });
+        })
+        .catch(response => {
+          console.error("something went wrong getting messages!", response);
+        });
     },
     pullMessages(page = 0) {
       let uri =
@@ -162,21 +184,11 @@ export default {
     //this.scrollToEnd();
   },
   mounted() {
-    // window.setInterval(() => {
-    //   if (this.conversation.id !== 0) {
-    //     this.getRequest(
-    //       "http://localhost:8000/conversation/" +
-    //         this.conversation.id +
-    //         "/messages"
-    //     )
-    //       .then(response => {
-    //         this.conversation.messages = response.body.messages;
-    //       })
-    //       .catch(response => {
-    //         console.error("something went wrong getting messages!", response);
-    //       });
-    //   }
-    // }, 5000);
+   window.setInterval(() => {
+      if (this.conversation.id !== 0) {
+        this.getNewMessages();
+      }
+    }, 5000);
   },
   mixins: [Requests]
 };
