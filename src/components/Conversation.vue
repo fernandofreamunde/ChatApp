@@ -6,7 +6,7 @@
     </div>
     <div class="card-body scrollable" ref="messageLog">
       <message
-        v-for="message in this.conversation.messages"
+        v-for="message in messages"
         v-bind:key="message.id"
         v-bind:message="message"
         v-bind:currentUserEmail="currentUser.email"
