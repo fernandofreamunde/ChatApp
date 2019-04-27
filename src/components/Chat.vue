@@ -72,6 +72,7 @@
         <div class="row">
           <div class="col">
             <conversation
+              ref="conversation"
               v-bind:token="token"
               v-bind:conversation="conversation"
               v-bind:currentUser="currentUser"
@@ -132,6 +133,7 @@ export default {
       this.getRequest("http://localhost:8000/conversation/" + conversation.id)
         .then(response => {
           this.conversation = response.body.conversation;
+          this.$refs.conversation.init(response.body.conversation);
         })
         .catch();
     },
