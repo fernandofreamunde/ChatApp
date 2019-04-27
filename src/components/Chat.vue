@@ -141,9 +141,18 @@ export default {
       this.invites.push(contact);
     },
     updateContact(contact) {
-      if (contact.status == "accepted") {
-        this.contacts.push(contact);
-      }
+      this.getConversations();
+    },
+    getConversations() {
+      this.getRequest("http://localhost:8000/conversation")
+        .then(response => {
+          this.conversations = response.body.conversations;
+
+          console.log(response.body.conversations);
+        })
+        .catch(response => {
+          console.error("something went wrong getting contacts", response);
+        });
     }
   },
   created() {
@@ -152,15 +161,7 @@ export default {
       this.$router.push("/login");
     }
 
-    this.getRequest("http://localhost:8000/conversation")
-      .then(response => {
-        this.conversations = response.body.conversations;
-
-        console.log(response.body.conversations);
-      })
-      .catch(response => {
-        console.error("something went wrong getting contacts", response);
-      });
+    this.getConversations();
 
     this.getRequest("http://localhost:8000/contact")
       .then(response => {

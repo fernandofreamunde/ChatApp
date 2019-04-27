@@ -129,9 +129,6 @@ export default {
         });
     },
     loadOldMessages() {
-      console.log("load older messages");
-      console.log(this.state.page, this.state.pageCount);
-
       this.state.page = this.state.page + 1;
 
       this.pullMessages(this.state.page)
@@ -164,9 +161,7 @@ export default {
         this.messages = response.body.messages.reverse();
       });
 
-      console.log(this.messages);
       this.getConversationPageCount();
-      //this.scrollToEnd();
     }
   },
   updated() {
@@ -179,8 +174,6 @@ export default {
     this.contact = this.conversation.participants[
       currentUserIndex === 0 ? 1 : 0
     ];
-
-    //this.scrollToEnd();
   },
   mounted() {
     window.setInterval(() => {
