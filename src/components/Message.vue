@@ -1,9 +1,11 @@
 <template>
   <div v-bind:class="{ author: this.state.isAuthor }" class="card">
     <div class="card-body">
-      <span v-bind:class="[this.state.isAuthor ? 'float-left' : 'float-right']" class="faint"><small>{{message.createdAt}}</small></span>
+      <span v-bind:class="[this.state.isAuthor ? 'float-left' : 'float-right']" class="faint">
+        <small>{{message.createdAt}}</small>
+      </span>
       {{ message.content }}
-      </div>
+    </div>
   </div>
 </template>
 

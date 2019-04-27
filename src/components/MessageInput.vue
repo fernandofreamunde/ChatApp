@@ -44,11 +44,10 @@ export default {
         this.$emit("messagePosted", resonense.body.message);
         this.message = "";
       });
-      //emit evend new message sent
       this.message = "";
     }
   },
-  mixins:[Requests]
+  mixins: [Requests]
 };
 </script>
 

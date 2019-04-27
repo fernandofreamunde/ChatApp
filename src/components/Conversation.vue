@@ -1,7 +1,11 @@
 <template>
   <div class="card stiky" v-if="state.show">
     <div class="card-header">
-      <button class="float-right" v-if="state.page < state.pageCount" v-on:click="loadOldMessages">load older messages</button>
+      <button
+        class="float-right"
+        v-if="state.page < state.pageCount"
+        v-on:click="loadOldMessages"
+      >load older messages</button>
       <h3 class="card-title">{{ contact.username }}</h3>
       <h6 class="card-subtitle text-muted">{{ contact.email }}</h6>
     </div>
@@ -60,7 +64,7 @@ export default {
         errors: [],
         pageCount: 0,
         page: 1,
-        show:false,
+        show: false
       },
       contact: {},
       messages: []
@@ -76,8 +80,7 @@ export default {
       messagelog.scrollTop = messagelog.scrollHeight;
     },
     lastMessageAt() {
-      return this.messages[this.messages.length - 1]
-        .id;
+      return this.messages[this.messages.length - 1].id;
     },
     getNewMessages() {
       this.getRequest(
@@ -130,24 +133,23 @@ export default {
       console.log(this.state.page, this.state.pageCount);
 
       this.state.page = this.state.page + 1;
-      
+
       this.pullMessages(this.state.page)
         .then(response => {
           response.body.messages.forEach(element => {
-          this.messages = prepend(element, this.messages);
-          })
+            this.messages = prepend(element, this.messages);
+          });
         })
         .catch(response => {
-          
-        this.state.page = this.state.page - 1;
-        })
-      },
+          this.state.page = this.state.page - 1;
+        });
+    },
     init(conversation) {
-        this.conversation = conversation;
-        console.log(conversation);
-        this.state.show = true;
-        this.state.page = 1;
-        this.state.pageCount = 0;
+      this.conversation = conversation;
+      console.log(conversation);
+      this.state.show = true;
+      this.state.page = 1;
+      this.state.pageCount = 0;
 
       const currentUserIndex = findWithAttr(
         conversation.participants,
@@ -155,20 +157,17 @@ export default {
         this.currentUser.email
       );
 
-      this.contact = conversation.participants[
-        currentUserIndex === 0 ? 1 : 0
-      ];
+      this.contact = conversation.participants[currentUserIndex === 0 ? 1 : 0];
       this.conversationId = conversation.id;
 
-      this.pullMessages()
-        .then(response => {
-          this.messages = response.body.messages.reverse();
-        });
+      this.pullMessages().then(response => {
+        this.messages = response.body.messages.reverse();
+      });
 
-       console.log( this.messages);
-       this.getConversationPageCount();
+      console.log(this.messages);
+      this.getConversationPageCount();
       //this.scrollToEnd();
-    },
+    }
   },
   updated() {
     this.state.show = true;
@@ -184,7 +183,7 @@ export default {
     //this.scrollToEnd();
   },
   mounted() {
-   window.setInterval(() => {
+    window.setInterval(() => {
       if (this.conversation.id !== 0) {
         this.getNewMessages();
       }
