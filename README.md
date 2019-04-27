@@ -1,4 +1,4 @@
-# ChatAppServer
+# ChatApp
 This project was made as an assessment for a job interview.
 
 ### Objective
@@ -18,7 +18,7 @@ Therefore this project has a very basic setup that has some requirements. If you
 
 #### Steps
 - [ ] clone this project
-- [ ] clone the Backend of it
+- [ ] clone the Backend of it... https://github.com/fernandofreamunde/ChatAppServer
 - [ ] on the Backend folder run `composer install`
 - [ ] on the Backend folder run `php bin/console doctrine:database:create`
 - [ ] on the Backend folder run `php bin/console doctrine:migrations:migrate`
