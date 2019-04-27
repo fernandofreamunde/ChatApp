@@ -14,7 +14,7 @@ import Requests from "../mixins/requests.js";
 
 export default {
   props: {
-    convo: {
+    conversationItem: {
       type: Object,
       required: true
     },
@@ -39,11 +39,11 @@ export default {
   methods: {},
   created() {
     const currentUserIndex = findWithAttr(
-      this.convo.participants,
+      this.conversationItem.participants,
       "email",
       this.currentUser.email
     );
-    this.contact = this.convo.participants[currentUserIndex === 0 ? 1 : 0];
+    this.contact = this.conversationItem.participants[currentUserIndex === 0 ? 1 : 0];
   },
   mixins: [Requests]
 };

@@ -11,10 +11,10 @@
           <conversationItem
             v-bind:token="token"
             v-bind:currentUser="currentUser"
-            v-for="convo in conversations"
-            v-bind:key="convo.id"
-            v-bind:convo="convo"
-            v-on:click.native="showConversation(convo)"
+            v-for="conversationItem in conversations"
+            v-bind:key="conversationItem.id"
+            v-bind:conversationItem="conversationItem"
+            v-on:click.native="showConversation(conversationItem)"
           ></conversationItem>
 
           <li class="sidebar-header">add contact</li>
